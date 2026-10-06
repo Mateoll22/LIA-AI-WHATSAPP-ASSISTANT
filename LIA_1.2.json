@@ -1,0 +1,1414 @@
+{
+  "name": "LIA 1.2",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -3280,
+        880
+      ],
+      "id": "31cb31eb-8083-4cb3-bb8d-bebf699183ec",
+      "name": "Check in database",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e48d7b0b-737b-4992-982c-70e7cf9e990b",
+              "name": "state_exist",
+              "value": "={{ $json.state }}",
+              "type": "string"
+            },
+            {
+              "id": "3ca03ac1-6851-4d2b-bd49-0df0652a05df",
+              "name": "last_message",
+              "value": "={{ $json.last_message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3136,
+        880
+      ],
+      "id": "e57c7a97-7ef8-4463-ad58-339a30f6f063",
+      "name": "verify state"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4e4f5a7d-0a51-41df-b1f2-c2107cdc19fc",
+              "leftValue": "={{ $json.state_exist && $json.state_exist !== \"null\" }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2880,
+        880
+      ],
+      "id": "c8a1c300-ea63-41c6-ac80-396fa21c524b",
+      "name": "if state"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_message",
+              "condition": "eq",
+              "keyValue": "={{ $('Check in database').item.json.last_message }}"
+            },
+            {
+              "keyName": "state",
+              "condition": "eq",
+              "keyValue": "null"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "last_message",
+              "fieldValue": "={{ $('Receive').item.json.messages[0].text.body }}"
+            },
+            {
+              "fieldId": "state",
+              "fieldValue": "esperando_opcion"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        896
+      ],
+      "id": "70df62b4-3e0a-4f8c-aba1-e4c8ed888017",
+      "name": "update state",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "LIA_testing1.1",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "number",
+              "fieldValue": "={{ $('Receive').item.json.contacts[0].wa_id }}"
+            },
+            {
+              "fieldId": "state",
+              "fieldValue": "esperando_opcion"
+            },
+            {
+              "fieldId": "last_message",
+              "fieldValue": "={{ $('Receive').item.json.messages[0].text.body }}"
+            },
+            {
+              "fieldId": "timestamp",
+              "fieldValue": "={{ $now }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2496,
+        1088
+      ],
+      "id": "33ab8eee-5a5c-4cfd-b695-9c22801a584a",
+      "name": "create user",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "condition": "eq",
+              "keyValue": "={{ $('Check in database').item.json.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "last_message",
+              "fieldValue": "={{ $('Receive').item.json.messages[0].text.body }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2640,
+        688
+      ],
+      "id": "65fe0149-c68b-456f-b3ad-0e755620c300",
+      "name": "update message",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "keyValue": "={{ $('Receive').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2496,
+        688
+      ],
+      "id": "46433d4e-aa01-4e15-8e87-2b6a1f98d012",
+      "name": "get user info",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3efd4743-cf1b-4bf0-b3df-948fdf4def06",
+              "name": "state",
+              "value": "={{ $json.state }}",
+              "type": "string"
+            },
+            {
+              "id": "64611937-5d73-4483-b8a1-08f4089f778f",
+              "name": "last_message",
+              "value": "={{ $json.last_message }}",
+              "type": "string"
+            },
+            {
+              "id": "2beea360-57ba-46d0-88f8-015e293ef135",
+              "name": "session_id",
+              "value": "={{ $('Receive').item.json.metadata.phone_number_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8bb718d4-e626-4370-abf1-eb50fb360567",
+              "name": "number",
+              "value": "={{ $json.number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2368,
+        688
+      ],
+      "id": "0234184d-b762-4be8-9859-9212c6adad4a",
+      "name": "create variables"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "esperando_opcion",
+                    "rightValue": "={{ $json.state }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b1486090-5fd4-4469-bc9a-8c64c31af07e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "982570fc-b6fa-42b6-819a-6d71de94b157",
+                    "leftValue": "esperando_confirmacion",
+                    "rightValue": "={{ $json.state }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "95774628-3ef8-43b5-a5bb-2a02b2f85ab5",
+                    "leftValue": "agendado",
+                    "rightValue": "={{ $json.state }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0b4a27db-3cca-4e26-8919-c1df33bae7ed",
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -2064,
+        656
+      ],
+      "id": "869328e6-6204-4715-8f65-da5a22b9635c",
+      "name": "switch state",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3472,
+        880
+      ],
+      "id": "d732d54a-9d5d-421e-a9ba-72d9a59b0842",
+      "name": "Receive",
+      "webhookId": "9921af23-f244-4739-befb-b40b7c4f4baf",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "fSmn0joFbMdylYir",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "={{ $json.number }}",
+        "textBody": "👋 Bienvenido/a a nuestro sistema de citas.\n\nPara agendar tu espacio súper rápido, envíame los siguientes datos:\n\n📝 Nombre completo\n📱 Teléfono\n📅 Fecha preferida (ej. 20/09/2026)\n🕐 Hora preferida (ej. 10:00 AM)\n💬 Motivo de la cita\n\n💡 Ejemplo: \"Soy Juan Pérez, 0987654321, el 20/09/2026 a las 3:00 PM para una consulta general.\"\n\n¿Para cuándo te gustaría tu cita? 😊",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -1504,
+        240
+      ],
+      "id": "39b2deda-ff5a-438d-8653-81ae139e4ef4",
+      "name": "Send message1",
+      "webhookId": "b8254d00-9f28-4092-86c9-8f9e7a12bba0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.last_message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Tu tarea es extraer los siguientes datos del mensaje del usuario para agendar una cita:\n- name (nombre completo)\n- phone (teléfono con 10 dígitos)\n- date (fecha en formato DD/MM/YYYY)\n- time (hora en formato HH:MM)\n- motivo (razón de la cita)\n\nREGLAS ESTRICTAS:\n1. Responde ÚNICAMENTE con un objeto JSON válido.\n2. NO inventes ni asumas ningún dato. Solo extrae lo que el usuario escribió explícitamente.\n\nESCENARIO 1: TODOS LOS DATOS ESTÁN PRESENTES\nSi logras extraer los 5 datos, responde exactamente con esta estructura:\n{\n  \"status\": \"complete\",\n  \"name\": \"...\",\n  \"phone\": \"...\",\n  \"date\": \"...\",\n  \"time\": \"...\",\n  \"motivo\": \"...\"\n}\n\nESCENARIO 2: FALTAN DATOS\nSi falta uno o más datos, tu respuesta debe usar un lenguaje natural, amable y en español para pedir lo que falta. \nPROHIBIDO usar los nombres de las variables en inglés (name, phone, date, time) en el mensaje. En su lugar, usa: \"tu nombre completo\", \"tu número de teléfono\", \"la fecha de la cita\", \"la hora de la cita\" o \"el motivo de tu consulta\".\n\nResponde exactamente con esta estructura:\n{\n  \"status\": \"incomplete\",\n  \"message\": \"Para agendar tu cita, por favor ayúdame con los datos que faltan: [Enumera aquí los datos faltantes en español natural y conversacional].\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1456,
+        672
+      ],
+      "id": "87c54c0c-8e34-4004-a3b1-8905f36489fc",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1616,
+        848
+      ],
+      "id": "ee798e36-89ca-43a7-bbb2-5bc6862d0c12",
+      "name": "OpenAI Chat Model6",
+      "credentials": {
+        "openAiApi": {
+          "id": "O1pxhRVlKAopgzb1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.session_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1472,
+        848
+      ],
+      "id": "2e1926f9-3067-4bb5-a144-3c0dba76ed36",
+      "name": "Postgres Chat Memory2",
+      "credentials": {
+        "postgres": {
+          "id": "j8lSHCV8FO1OxNPy",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1280,
+        1344
+      ],
+      "id": "bf5fba4c-53d9-42a0-a0cb-32fa23cfb7c1",
+      "name": "OpenAI Chat Model7",
+      "credentials": {
+        "openAiApi": {
+          "id": "O1pxhRVlKAopgzb1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('create variables').item.json.session_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1136,
+        1392
+      ],
+      "id": "72262d77-f0cd-4652-ab2a-ba1638a3e79a",
+      "name": "Postgres Chat Memory3",
+      "credentials": {
+        "postgres": {
+          "id": "j8lSHCV8FO1OxNPy",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Crea evento en Google Calendar con timezone de Ecuador. Requiere: start (YYYY-MM-DDTHH:MM:00-05:00), summary, description, timeZone=\"America/Guayaquil\".",
+        "calendar": {
+          "__rl": true,
+          "value": "lightiaec@gmail.com",
+          "mode": "list",
+          "cachedResultName": "lightiaec@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -992,
+        1376
+      ],
+      "id": "5f9d37bb-0e4f-4c24-88cc-32690ddfecd2",
+      "name": "createEvent1",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "2mr0NgowhYUBGeWZ",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "condition": "eq",
+              "keyValue": "={{ $('get user info').item.json.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "state",
+              "fieldValue": "null"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        1376
+      ],
+      "id": "1370e783-24a0-4a45-ae44-9c3f25b8ac6c",
+      "name": "update_state1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "={{ $('Edit Fields').item.json.numbersend }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -848,
+        1136
+      ],
+      "id": "f37f9a0c-49d3-410a-90c0-19af1deb2ba6",
+      "name": "Send message3",
+      "webhookId": "b8254d00-9f28-4092-86c9-8f9e7a12bba0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "condition": "eq",
+              "keyValue": "={{ $('get user info').item.json.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "state",
+              "fieldValue": "esperando_confirmacion"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        240
+      ],
+      "id": "cc390de0-a36d-4302-8922-db299a6241fb",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "282e094a-996f-4bbe-aadd-266cfcf18aa1",
+              "leftValue": "={{ $json.output.status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1168,
+        672
+      ],
+      "id": "9633118e-51f6-4b1a-a4bd-2690f784ef6a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "\n\n{\n  \"status\": \"string\",\n  \"name\": \"string\",\n  \"phone\": \"string\",\n  \"date\": \"string\",\n  \"time\": \"string\"\n}\n\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1344,
+        848
+      ],
+      "id": "5ee9da51-7fb5-43ba-8f73-de278029566b",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "LIA_testing1.1",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "number",
+              "condition": "eq",
+              "keyValue": "={{ $('get user info').item.json.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "state",
+              "fieldValue": "agendado"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        576
+      ],
+      "id": "e34ac86e-7667-40ba-ad31-6592834f3159",
+      "name": "Update a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "={{ $('switch state').item.json.number }}",
+        "textBody": "={{ $json.output.message }}\n\nEnvíame todos los datos nuevamente. 😊",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -976,
+        704
+      ],
+      "id": "e4a52f27-0fc4-4257-a40a-8ce8223d8f2b",
+      "name": "Send message4",
+      "webhookId": "b8254d00-9f28-4092-86c9-8f9e7a12bba0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "={{ $('Receive').item.json.contacts[0].wa_id }}",
+        "textBody": "¡Hola! Soy LIA, tu asistente virtual 👋\nEstoy aquí para coordinar tu cita. ¡Continuemos con tu agendamiento! \n\n¿Empezamos de una vez?",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -2112,
+        976
+      ],
+      "id": "249c09f4-8ab8-4731-8c30-9329b703d2eb",
+      "name": "send message 1",
+      "webhookId": "c0735818-e387-40cf-9507-95e5323fa3f4",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "User_info",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('If').item.json.output.name }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('If').item.json.output.phone }}"
+            },
+            {
+              "fieldId": "date",
+              "fieldValue": "={{ DateTime.fromFormat($('If').item.json.output.date, 'dd/MM/yyyy').toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "fieldId": "time",
+              "fieldValue": "={{ $('If').item.json.output.time }}"
+            },
+            {
+              "fieldId": "motive",
+              "fieldValue": "={{ $('If').item.json.output.motivo }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        384
+      ],
+      "id": "31655983-9798-4b75-932d-9729be32a7ad",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "={{ $('switch state').item.json.number }}",
+        "textBody": "=✅ Perfecto! Estos son los datos:\n\n👤 {{ $json.output.name }}\n📱 {{ $json.output.phone }}\n📅 {{ $json.output.date }}\n🕐 {{ $json.output.time }}\n💬 {{ $json.output.motivo }}\n\n¿Seguimos con el Agendamiento?",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -976,
+        528
+      ],
+      "id": "81285762-60c1-44bf-9f43-28fb10d850d3",
+      "name": "Send message2",
+      "webhookId": "b8254d00-9f28-4092-86c9-8f9e7a12bba0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres el asistente de agendamiento automático de citas.\n\nTu trabajo es AGENDAR AUTOMÁTICAMENTE la cita sin pedir confirmación al usuario.\n\nEJECUTA ESTAS 4 ACCIONES INMEDIATAMENTE:\n\n1. Usa checkUser1 para obtener los datos del usuario de la tabla User_info\n   - Input: phone (número de teléfono del usuario actual)\n   - Esto te devolverá: id, name, phone\n\n2. Usa createCita1 para guardar la cita en la base de datos Cita_testing1.1\n   - Parámetros:\n     * name: [del checkUser1]\n     * phone: [del checkUser1]\n     * date: [la fecha disponible]\n     * time: [la hora disponible]\n     * motivo: [el motivo de la cita]\n\n3. Usa createEvent1 para crear el evento en Google Calendar\n   \n   FORMATO DE FECHA Y HORA - ECUADOR (UTC-5):\n   \n   La fecha viene en formato DD/MM/YYYY (ejemplo: \"10/01/2026\")\n   La hora viene en formato HH:MM (ejemplo: \"10:00\" o \"18:00\")\n   \n   CONVERSIÓN A ISO CON TIMEZONE ECUADOR:\n   \n   Paso 1: Convierte DD/MM/YYYY a YYYY-MM-DD\n   - \"10/01/2026\" → \"2026-01-10\"\n   \n   Paso 2: Combina con la hora y timezone -05:00\n   - Formato: YYYY-MM-DDTHH:MM:00-05:00\n   \n   EJEMPLOS:\n   * date=\"10/01/2026\", time=\"10:00\" → start=\"2026-01-10T10:00:00-05:00\"\n   * date=\"25/12/2026\", time=\"18:00\" → start=\"2026-12-25T18:00:00-05:00\"\n   \n   Parámetros para createEvent1:\n   - summary: \"Cita: [motivo]\"\n   - description: \"Cliente: [name] - Tel: [phone] - Motivo: [motivo]\"\n   - start: YYYY-MM-DDTHH:MM:00-05:00\n   - timeZone: \"America/Guayaquil\"\n\n4. Usa update_state1 para cambiar el estado a \"null\"\n\n5. Envía INMEDIATAMENTE este mensaje al usuario:\n\n\"✅ ¡Tu cita ha sido agendada exitosamente!\n\n📋 RESUMEN DE TU CITA:\n👤 Nombre: [name]\n📱 Teléfono: [phone]\n📅 Fecha: [date]\n🕐 Hora: [time] (Hora de Ecuador)\n💬 Motivo: [motivo]\n\n📍 Te esperamos en Quito, Ecuador\n\nSi necesitas cambiar algo, escríbeme 😊\"\n\n═══════════════════════════════════════════════════════\n\nREGLAS CRÍTICAS:\n✅ NO pidas confirmación al usuario\n✅ NO preguntes nada\n✅ EJECUTA las 4 acciones automáticamente\n✅ USA la hora EXACTA sin conversiones adicionales\n✅ Fecha formato: DD/MM/YYYY → convierte a YYYY-MM-DD\n✅ SIEMPRE usa timezone \"-05:00\" para Ecuador\n✅ Envía el mensaje de confirmación inmediatamente\n\nFLUJO AUTOMÁTICO:\nMensaje del usuario → checkUser1 → createCita1 → createEvent1 → update_state1 → Enviar confirmación\n\nNO HAGAS PREGUNTAS. SOLO AGENDA Y CONFIRMA.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1152,
+        1136
+      ],
+      "id": "566d595f-279c-4775-83e7-fe32b413b4a1",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "df752779-4e00-4e8d-87c4-f2a207004fc1",
+              "name": "number",
+              "value": "={{ $json.number.startsWith('593') ? '0' + $json.number.slice(3) : $json.number }}",
+              "type": "string"
+            },
+            {
+              "id": "2218cbd8-20e5-47b5-9ccf-157324ad15ee",
+              "name": "numbersend",
+              "value": "={{ $json.number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1488,
+        1168
+      ],
+      "id": "e3da501b-1597-4142-97b7-67df1bc54fd4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obtiene datos del usuario de la tabla User_info usando el número de teléfono. Retorna: id, name, phone.",
+        "operation": "get",
+        "tableId": "User_info",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone",
+              "keyValue": "={{ $('get user info').item.json.number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        1376
+      ],
+      "id": "0b9fad8c-132a-4688-b838-5e1f515a5657",
+      "name": "checkUser1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Herramienta para crear y guardar una nueva cita en la tabla Cita_testing1.1. \nRequiere recopilar los siguientes datos: \n- name (nombre del cliente)\n- phone (teléfono)\n- date (FECHA ESTRICTAMENTE EN FORMATO YYYY-MM-DD, por ejemplo: 2026-09-16. NUNCA usar barras /)\n- time (hora en formato HH:MM)\n- motivo (razón de la cita)\n\nIMPORTANTE: No ejecutes esta acción hasta que el usuario te haya proporcionado todos los datos requeridos.",
+        "tableId": "Cita_testing1.1",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "date",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues2_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "time",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues3_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "motive",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues4_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        1376
+      ],
+      "id": "aca1f4ec-74a7-40ff-88e5-0706127c30cd",
+      "name": "createCita1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uUwdwtz3TCaoM4Nt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1113017031904216",
+        "recipientPhoneNumber": "+593983400454",
+        "textBody": "=SE A AGENDADO UNA CITA CON LOS SIGUIENTES DATOS:\n\n{{ $('AI Agent3').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -688,
+        1136
+      ],
+      "id": "c4812552-a089-490b-bc2b-d210d9091394",
+      "name": "Send message5",
+      "webhookId": "a8b7c3c7-b172-4f49-9e12-2c226da30444",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "we7eHyJa9Omm4SQL",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "75dc0af6-3bec-4909-ba2c-9b51cb00a64b",
+              "leftValue": "={{ $json.state_exist != null }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2656,
+        976
+      ],
+      "id": "2b236e47-178b-497a-89cd-762b1cd52ac7",
+      "name": "if null"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check in database": {
+      "main": [
+        [
+          {
+            "node": "verify state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verify state": {
+      "main": [
+        [
+          {
+            "node": "if state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if state": {
+      "main": [
+        [
+          {
+            "node": "update message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "if null",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update state": {
+      "main": [
+        [
+          {
+            "node": "send message 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create user": {
+      "main": [
+        [
+          {
+            "node": "send message 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update message": {
+      "main": [
+        [
+          {
+            "node": "get user info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get user info": {
+      "main": [
+        [
+          {
+            "node": "create variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create variables": {
+      "main": [
+        [
+          {
+            "node": "switch state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "switch state": {
+      "main": [
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive": {
+      "main": [
+        [
+          {
+            "node": "Check in database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update_state1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "createEvent1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message1": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message2": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Send message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkUser1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "createCita1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message3": {
+      "main": [
+        [
+          {
+            "node": "Send message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if null": {
+      "main": [
+        [
+          {
+            "node": "update state",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bad7fbe6-e96e-4bce-893f-241c30b8700e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8acd3cf777c401812dc0c8a8858da81d8cadab97a238279cb8d178eb66b8d311"
+  },
+  "id": "1uRqJTribsa11O36",
+  "tags": []
+}
